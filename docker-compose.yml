@@ -1,0 +1,17 @@
+version: '2'
+services:
+  db:
+    image: mariadb:10.5
+    restart: 'no'
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_DATABASE: test
+      MYSQL_ROOT_PASSWORD: '123'
+    command:
+      - mysqld
+      - --general-log
+      - --general-log-file=/var/log/mysql/query.log
+      - --slow-query-log
+      - --slow-query-log-file=/var/log/mysql/slow.log
+      - --log-error=/var/log/mysql/error.log

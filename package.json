@@ -1,0 +1,39 @@
+{
+  "name": "prisma-statement-cache-leak",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "concurrently --kill-others-on-fail \"pnpm db:serve\" \"pnpm db:migrate\" \"pnpm db:monitor\" \"pnpm db:hammer\"",
+    "db:stop": "docker compose down",
+    "db:serve": "docker compose up -d",
+    "db:wait": "wait-on -d 3000 tcp:3306 && wait-on -d 3000 tcp:3306 && wait-on -d 3000 tcp:3306 && wait-on -d 3000 tcp:3306 && wait-on -d 3000 tcp:3306",
+    "db:migrate": "pnpm db:wait && prisma db push --skip-generate && echo Migrated!",
+    "db:monitor": "pnpm db:wait && bash monitor.sh",
+    "db:hammer": "pnpm db:wait && node prisma.js",
+    "db:logs": "docker compose exec db tail -f /var/log/mysql/query.log"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@opentelemetry/api": "1.4.1",
+    "@opentelemetry/context-async-hooks": "1.12.0",
+    "@opentelemetry/exporter-trace-otlp-http": "0.38.0",
+    "@opentelemetry/instrumentation": "0.38.0",
+    "@opentelemetry/propagator-ot-trace": "0.26.2",
+    "@opentelemetry/resources": "1.12.0",
+    "@opentelemetry/sdk-trace-base": "1.12.0",
+    "@opentelemetry/sdk-trace-node": "1.12.0",
+    "@opentelemetry/semantic-conventions": "1.12.0",
+    "@prisma/client": "4.13.0",
+    "@prisma/instrumentation": "4.13.0"
+  },
+  "devDependencies": {
+    "concurrently": "8.0.1",
+    "dotenv-flow": "3.2.0",
+    "prisma": "4.13.0",
+    "wait-on": "7.0.1"
+  }
+}
